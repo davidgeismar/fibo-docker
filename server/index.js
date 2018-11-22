@@ -44,7 +44,8 @@ pgClient
     res.send(values.rows);
   })
 
-  app.get('values/current', async (req, res) => {
+  app.get('/values/current', async (req, res) => {
+    console.log('in values current');
     redisClient.hgetall('values', (err, values) => {
       res.send(values)
     });
@@ -56,11 +57,12 @@ pgClient
     if (parseInt(index) > 40){
       return res.status(422).send('Index too high');
     }
+      console.log('in values');
     redisClient.hset('values', index, 'nothing yet');
     pgClient.query('INSERT INTO values(number) VALUES($1)', [index])
     res.send({working: true});
-
-    app.listen(5000, err =>{
-      console.log('Listening');
-    })
+  })
+  
+  app.listen(5000, err =>{
+    console.log('Listening');
   })

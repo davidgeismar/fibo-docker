@@ -14,6 +14,7 @@ class Fib extends Component {
   }
 
   async fetchValues(){
+    // querying redis
     const values = await axios.get('api/values/current');
     this.setState({
       values: values.data
@@ -21,6 +22,7 @@ class Fib extends Component {
   }
 
   async fetchIndexes() {
+    // querying database
     const seenIndexes = await axios.get('api/values/all');
     this.setState({
       seenIndexes: seenIndexes.data
@@ -44,7 +46,9 @@ class Fib extends Component {
 
   handleSubmit = async (event) => {
     event.preventDefault();
-    await axios.post('api/values', {
+    console.log(this.state.index);
+    // storing index in db and calculating value with redis
+    await axios.post('/api/values', {
       index: this.state.index
     });
     this.setState({index: ''});
@@ -57,12 +61,14 @@ class Fib extends Component {
           <label>Enter your index:</label>
           <input
             value={this.state.index}
-            onChange={event => this.setState({index: event.target.values})}
+            onChange={event => this.setState({index: event.target.value})}
           />
           <button>Submit </button>
         </form>
         <h3>Indexes I have seen </h3>
+
         {this.renderSeenIndexes()}
+
         <h3> Calculated values </h3>
         {this.renderValues()}
       </div>
